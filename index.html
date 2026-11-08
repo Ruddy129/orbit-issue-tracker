@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f7f8fa" />
+    <meta name="description" content="Orbit is a lightweight team issue tracker for planning and shipping software." />
+    <title>Orbit · Team issue tracker</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></symbol>
+      <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M4 4h16l1 11v5H3v-5L4 4Z"/><path d="M3 14h5l2 3h4l2-3h5"/></symbol>
+      <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+      <symbol id="i-down" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></symbol>
+      <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 7h16M7 12h10m-7 5h4"/><circle cx="8" cy="7" r="1.5"/><circle cx="15" cy="12" r="1.5"/></symbol>
+      <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></symbol>
+      <symbol id="i-message" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="m18 6-12 12M6 6l12 12"/></symbol>
+      <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></symbol>
+      <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol>
+      <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3ZM19 14l1.2 2.8L23 18l-2.8 1.2L19 22l-1.2-2.8L15 18l2.8-1.2L19 14Z"/></symbol>
+      <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 21v-7m0-4V3m8 18v-9m0-4V3m8 18v-5m0-4V3M2 14h4m4-6h4m4 8h4"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6"/></symbol>
+      <symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></symbol>
+      <symbol id="i-tag" viewBox="0 0 24 24"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><circle cx="7.5" cy="7.5" r=".5"/></symbol>
+      <symbol id="i-logout" viewBox="0 0 24 24"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M12 3h6a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-6"/></symbol>
+    </svg>
+
+    <main class="auth-screen" id="authScreen">
+      <section class="auth-visual">
+        <a class="brand auth-brand" href="#" aria-label="Orbit home"><span class="brand-mark"><span></span><span></span><span></span><span></span></span><span>orbit</span></a>
+        <div class="auth-visual-content"><div class="auth-orbit-art"><span class="orbit-ring orbit-ring-one"></span><span class="orbit-ring orbit-ring-two"></span><span class="orbit-core"></span><span class="orbit-star orbit-star-one">✦</span><span class="orbit-star orbit-star-two">✧</span></div><p class="auth-overline">MAKE GOOD WORK VISIBLE</p><h1>One place for<br />the work that<br /><em>moves you forward.</em></h1><p class="auth-visual-copy">Plan together, spot what needs attention, and keep every project moving.</p></div>
+        <div class="auth-visual-footer"><span><i></i> Built for teams that ship</span><span>© 2026 Orbit</span></div>
+      </section>
+      <section class="auth-main">
+        <div class="auth-card" id="authCard">
+          <div id="authFormWrap">
+            <div class="auth-card-kicker" id="authKicker">WELCOME BACK</div><h2 id="authHeading">Sign in to Orbit</h2><p class="auth-card-copy" id="authDescription">Pick up where your team left off.</p>
+            <div class="auth-alert hidden" id="authAlert" role="status"></div>
+            <form id="authForm">
+              <div class="auth-name-field hidden" id="authNameField"><label for="authName">Your name</label><input id="authName" type="text" maxlength="60" autocomplete="name" placeholder="Jordan Lee" /></div>
+              <label for="authEmail">Email address</label><input id="authEmail" type="email" autocomplete="email" required placeholder="you@company.com" />
+              <label for="authPassword">Password</label><input id="authPassword" type="password" autocomplete="current-password" minlength="8" required placeholder="At least 8 characters" />
+              <button class="button button-primary auth-submit" id="authSubmit" type="submit">Sign in <span>→</span></button>
+            </form>
+            <div class="auth-switch"><span id="authSwitchText">New to Orbit?</span><button type="button" id="authToggle">Create an account</button></div>
+            <div class="auth-secure-note"><span>✓</span> Your workspace data is protected with row-level security.</div>
+          </div>
+          <div id="workspaceSetup" class="hidden">
+            <div class="setup-icon"><svg class="icon"><use href="#i-layers"></use></svg></div><div class="auth-card-kicker">FIRST, YOUR TEAM</div><h2>Create your workspace</h2><p class="auth-card-copy">This is where your projects, issues, and teammates will live.</p>
+            <div class="auth-alert hidden" id="workspaceAlert" role="status"></div>
+            <form id="workspaceForm"><label for="workspaceInput">Workspace name</label><input id="workspaceInput" type="text" maxlength="60" required placeholder="e.g. Northstar Studio" /><button class="button button-primary auth-submit" type="submit">Create workspace <span>→</span></button></form>
+            <div class="auth-secure-note"><span>✦</span> We’ll add a sample project board to help you get started.</div>
+          </div>
+        </div>
+        <div class="auth-footer">By continuing, you agree to keep your team’s work respectful and secure.</div>
+      </section>
+    </main>
+
+    <div class="app-shell hidden" id="appShell">
+      <aside class="sidebar">
+        <a class="brand" href="#" aria-label="Orbit home">
+          <span class="brand-mark"><span></span><span></span><span></span><span></span></span>
+          <span>orbit</span>
+        </a>
+        <button class="workspace-switcher" id="workspaceSwitcher" type="button">
+          <span class="workspace-avatar" id="workspaceAvatar">N</span>
+          <span class="workspace-copy"><strong id="workspaceName">Workspace</strong><small id="workspacePlan">Team workspace</small></span>
+          <svg class="icon"><use href="#i-down"></use></svg>
+        </button>
+        <div class="workspace-menu hidden" id="workspaceMenu"></div>
+
+        <div class="nav-label">WORKSPACE</div>
+        <nav class="primary-nav" aria-label="Main navigation">
+          <button class="nav-item" data-nav="overview"><svg class="icon"><use href="#i-grid"></use></svg><span>Overview</span></button>
+          <button class="nav-item" data-nav="my-issues"><svg class="icon"><use href="#i-inbox"></use></svg><span>My issues</span><span class="nav-count" id="myIssueCount">0</span></button>
+          <button class="nav-item active" data-nav="projects"><svg class="icon"><use href="#i-layers"></use></svg><span>Projects</span></button>
+        </nav>
+
+        <div class="project-heading"><span class="nav-label">YOUR PROJECTS</span><button class="quiet-icon" id="addProjectBtn" title="Add project" aria-label="Add project"><svg class="icon"><use href="#i-plus"></use></svg></button></div>
+        <div class="project-nav" id="projectNav"></div>
+
+        <div class="sidebar-bottom">
+          <button class="nav-item"><svg class="icon"><use href="#i-spark"></use></svg><span>What's new</span><span class="new-dot"></span></button>
+          <button class="nav-item"><svg class="icon"><use href="#i-sliders"></use></svg><span>Settings</span></button>
+          <div class="profile-card"><div class="avatar avatar-jordan" id="profileAvatar">JL</div><div class="profile-copy"><strong id="profileName">Team member</strong><small id="profileSubtitle">Signed in</small></div><button class="quiet-icon" id="signOutBtn" title="Sign out" aria-label="Sign out"><svg class="icon"><use href="#i-logout"></use></svg></button></div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div class="breadcrumbs"><span>Projects</span><svg class="icon tiny"><use href="#i-chevron"></use></svg><strong id="breadcrumbProject">Platform</strong></div>
+          <div class="topbar-actions">
+            <button class="help-link" type="button"><span class="help-mark">?</span> Help center</button>
+            <button class="quiet-icon notification-btn" aria-label="Notifications"><svg class="icon"><use href="#i-bell"></use></svg><i></i></button>
+            <div class="avatar avatar-jordan top-avatar" id="topAvatar" title="Signed in">JL</div>
+          </div>
+        </header>
+
+        <section class="page-content">
+          <div class="page-title-row">
+            <div>
+              <div class="eyebrow"><span class="project-dot"></span><span id="projectEyebrow">PLATFORM PROJECT</span><span class="eyebrow-divider">/</span><span>SPRINT 08</span></div>
+              <h1 id="pageTitle">Platform</h1>
+              <p class="page-subtitle" id="pageSubtitle">Build a reliable foundation for the next wave of product features.</p>
+            </div>
+            <div class="title-actions">
+              <button class="button button-secondary" id="shareBtn"><svg class="icon"><use href="#i-arrow"></use></svg> Invite team</button>
+              <button class="button button-primary" id="newIssueBtn"><svg class="icon"><use href="#i-plus"></use></svg> New issue</button>
+            </div>
+          </div>
+
+          <section class="stats-grid" aria-label="Project summary">
+            <article class="stat-card"><div class="stat-heading"><span>Open issues</span><span class="stat-icon stat-violet"><svg class="icon"><use href="#i-inbox"></use></svg></span></div><div class="stat-value" id="statOpen">0</div><div class="stat-foot"><span class="stat-soft">Across all priorities</span></div></article>
+            <article class="stat-card"><div class="stat-heading"><span>In progress</span><span class="stat-icon stat-blue"><svg class="icon"><use href="#i-clock"></use></svg></span></div><div class="stat-value" id="statProgress">0</div><div class="stat-foot"><span class="stat-soft">Moving this sprint</span></div></article>
+            <article class="stat-card"><div class="stat-heading"><span>Completed</span><span class="stat-icon stat-green"><svg class="icon"><use href="#i-check"></use></svg></span></div><div class="stat-value" id="statDone">0</div><div class="stat-foot"><span class="stat-soft">Ready to ship</span></div></article>
+            <article class="stat-card"><div class="stat-heading"><span>Due this week</span><span class="stat-icon stat-amber"><svg class="icon"><use href="#i-calendar"></use></svg></span></div><div class="stat-value" id="statDue">0</div><div class="stat-foot"><span class="stat-soft">Across this project</span></div></article>
+          </section>
+
+          <div class="board-heading">
+            <div class="board-heading-copy"><h2>Issue board</h2><span class="issue-total" id="issueTotal">0 issues</span></div>
+            <div class="board-controls">
+              <label class="search-box"><svg class="icon"><use href="#i-search"></use></svg><input id="searchInput" type="search" placeholder="Search issues..." aria-label="Search issues" /><kbd>/</kbd></label>
+              <select class="select-control" id="priorityFilter" aria-label="Filter by priority"><option value="all">All priorities</option><option value="urgent">Urgent</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select>
+              <div class="view-toggle" role="group" aria-label="Board view"><button class="view-button active" data-view="board" title="Board view"><span class="view-columns"><i></i><i></i><i></i></span></button><button class="view-button" data-view="list" title="List view"><span class="view-list"><i></i><i></i><i></i></span></button></div>
+            </div>
+          </div>
+
+          <section id="boardView" class="board" aria-label="Issue board"></section>
+          <section id="listView" class="list-view hidden" aria-label="Issue list"></section>
+          <div id="emptyState" class="empty-state hidden"><div class="empty-illustration"><svg class="icon"><use href="#i-tag"></use></svg></div><h3>No issues found</h3><p>Try changing your search or filters, or create an issue to get started.</p><button class="button button-primary" id="emptyNewIssue"><svg class="icon"><use href="#i-plus"></use></svg> Create an issue</button></div>
+          <footer class="page-footer"><span><span class="footer-live-dot"></span> All changes saved</span><span>Last updated just now</span></footer>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal-backdrop hidden" id="issueModal" aria-hidden="true">
+      <section class="modal issue-modal" role="dialog" aria-modal="true" aria-labelledby="issueModalTitle">
+        <div class="modal-header"><div><div class="modal-kicker" id="modalKicker">NEW ISSUE</div><h2 id="issueModalTitle">Create an issue</h2></div><button class="quiet-icon close-modal" aria-label="Close"><svg class="icon"><use href="#i-close"></use></svg></button></div>
+        <form id="issueForm">
+          <input type="hidden" id="issueId" />
+          <label class="field-label" for="issueTitle">Issue title <span>*</span></label>
+          <input class="text-input title-input" id="issueTitle" name="title" maxlength="100" placeholder="e.g. Add two-factor authentication" required />
+          <label class="field-label" for="issueDescription">Description</label>
+          <textarea class="text-input description-input" id="issueDescription" name="description" rows="4" maxlength="600" placeholder="What needs to be done? Add details, context, or acceptance criteria..."></textarea>
+          <div class="form-grid">
+            <div><label class="field-label" for="issueProject">Project</label><select class="text-input" id="issueProject" name="project"></select></div>
+            <div><label class="field-label" for="issueStatus">Status</label><select class="text-input" id="issueStatus" name="status"><option value="backlog">Backlog</option><option value="in-progress">In progress</option><option value="review">In review</option><option value="done">Done</option></select></div>
+            <div><label class="field-label" for="issuePriority">Priority</label><select class="text-input" id="issuePriority" name="priority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option><option value="urgent">Urgent</option></select></div>
+            <div><label class="field-label" for="issueAssignee">Assignee</label><select class="text-input" id="issueAssignee" name="assignee"></select></div>
+            <div class="field-full"><label class="field-label" for="issueDueDate">Due date</label><input class="text-input" type="date" id="issueDueDate" name="dueDate" /></div>
+          </div>
+          <div class="modal-footer"><span class="form-hint">Press <kbd>Esc</kbd> to cancel</span><div><button class="button button-secondary close-modal" type="button">Cancel</button><button class="button button-primary" type="submit" id="saveIssueBtn">Create issue</button></div></div>
+        </form>
+      </section>
+    </div>
+
+    <div class="drawer-backdrop hidden" id="detailModal" aria-hidden="true">
+      <aside class="detail-drawer" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+        <div class="drawer-top"><div class="drawer-crumb"><span id="detailProject">Platform</span><svg class="icon tiny"><use href="#i-chevron"></use></svg><span id="detailKey">ORB-101</span></div><div class="drawer-actions"><button class="quiet-icon" id="editIssueBtn" title="Edit issue" aria-label="Edit issue"><svg class="icon"><use href="#i-edit"></use></svg></button><button class="quiet-icon danger-hover" id="deleteIssueBtn" title="Delete issue" aria-label="Delete issue"><svg class="icon"><use href="#i-trash"></use></svg></button><button class="quiet-icon close-detail" aria-label="Close"><svg class="icon"><use href="#i-close"></use></svg></button></div></div>
+        <div class="detail-content"><div class="detail-label" id="detailStatus"></div><h2 id="detailTitle"></h2><p class="detail-description" id="detailDescription"></p>
+          <div class="detail-properties"><div class="property-row"><span>Status</span><select id="detailStatusSelect" class="detail-select"></select></div><div class="property-row"><span>Priority</span><select id="detailPrioritySelect" class="detail-select"></select></div><div class="property-row"><span>Assignee</span><select id="detailAssigneeSelect" class="detail-select"></select></div><div class="property-row"><span>Due date</span><span class="property-value" id="detailDueDate">—</span></div></div>
+          <section class="activity-section"><div class="activity-heading"><h3>Activity</h3><span id="commentCount">0</span></div><div id="commentList" class="comment-list"></div><form id="commentForm" class="comment-form"><div class="avatar avatar-jordan">JL</div><div class="comment-input-wrap"><textarea id="commentInput" rows="2" placeholder="Leave a comment..."></textarea><div class="comment-submit-row"><span>Updates are visible to your team</span><button class="button button-primary button-small" type="submit">Comment</button></div></div></form></section>
+        </div>
+      </aside>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
